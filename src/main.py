@@ -7,7 +7,7 @@ from src.admin.auth import authentication_backend
 from src.database import engine
 
 app = FastAPI(
-    title="FastAPI Template",
+    title="Luno VPN backend",
     version="0.0.1",
     # docs_url=None,    # Отключить Swagger UI
     # redoc_url=None,   # Отключить ReDoc

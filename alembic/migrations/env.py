@@ -11,7 +11,11 @@ sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
 from src.config import settings
 from src.database import Base
-from src.models import User, Order
+from src.models import (
+    User, Subscription, PlanSubscription, PromoCode, 
+    Referral, Payment, PaymentProvider, PaymentType,
+    Server, VPNConfiguration
+)  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
