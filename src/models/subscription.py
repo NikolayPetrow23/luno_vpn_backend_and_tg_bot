@@ -35,6 +35,12 @@ class Subscription(Base):
         foreign_keys=[promo_code_id],
         lazy="select"
     )
+    payment: Mapped["Payment"] = relationship(
+        "Payment",
+        back_populates="subscription",
+        lazy="select",
+        uselist=False
+    )
 
 
 class PlanSubscription(Base):

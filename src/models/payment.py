@@ -54,6 +54,12 @@ class Payment(Base):
         foreign_keys=[payment_type_id],
         lazy="select"
     )
+    subscription: Mapped["Subscription"] = relationship(
+        "Subscription", 
+        back_populates="payment",
+        foreign_keys=[subscription_id],
+        lazy="select",
+    )
 
 
 class PaymentProvider(Base):

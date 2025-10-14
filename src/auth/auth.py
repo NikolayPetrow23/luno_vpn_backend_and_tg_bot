@@ -29,9 +29,9 @@ def validate_password(
 
 def encode_jwt_token(
     payload: dict,
-    key: str = settings.config.ACCESS_SECRET_KEY,
+    key: str = settings.config.JWT_SECRET_KEY,
     algorithm: str = settings.config.ALGORITHM,
-    expire_days: int = settings.auth_jwt.access_token_expire_days,
+    expire_days: int = settings.auth_jwt.ACCESS_TOKEN_EXPIRE_DAYS,
 ) -> str:
     to_encode = payload.copy()
     now = datetime.now()
@@ -48,22 +48,6 @@ def encode_jwt_token(
         algorithm,
     )
     
-    return encoded_jwt
-
-
-def encode_token_user_id(
-    payload: dict,
-    key: str = settings.config.ACCESS_SECRET_KEY,
-    algorithm: str = settings.config.ALGORITHM
-):
-    to_encode = payload.copy()
-
-    encoded_jwt = jwt.encode(
-        to_encode,
-        key,
-        algorithm
-    )
-
     return encoded_jwt
 
 

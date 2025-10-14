@@ -18,12 +18,15 @@ class DataBase:
 
 
 class Config:
-    ACCESS_SECRET_KEY = os.getenv("ACCESS_SECRET_KEY")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     ALGORITHM = os.getenv("ALGORITHM")
+    TEST_PAYMENT_SHOP_ID = os.getenv("TEST_PAYMENT_SHOP_ID")
+    TEST_PAYMENT_SHOP_TOKEN = os.getenv("TEST_PAYMENT_SHOP_TOKEN")
+    YOOKASSA_RETURN_URL = os.getenv("YOOKASSA_RETURN_URL")
 
 
 class AuthJWT:
-    access_token_expire_days: int = 3
+    ACCESS_TOKEN_EXPIRE_DAYS: int = 1
 
 
 class Settings:
