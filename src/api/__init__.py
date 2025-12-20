@@ -7,6 +7,7 @@ from src.api.subscription import router as router_subscription
 
 
 router = APIRouter(prefix="/api/v1")
+# router = APIRouter(prefix="")
 router.include_router(router_user)
 router.include_router(router_auth)
 router.include_router(router_payment)

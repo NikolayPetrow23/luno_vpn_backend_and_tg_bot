@@ -1,0 +1,105 @@
+# nats - local !
+# back - local!
+# bd - local!
+# bot - local!
+# front - web!
+
+
+# nginx - web
+#   - hook platega
+#   - hook happ and v2raytun
+#   - hook bot
+#   - front
+#   - 
+
+volumes:
+  pg_data:
+  static:
+  media:
+  certs:
+
+networks:
+  db_network:
+  internal:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    env_file:
+      - .env
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
+    networks:
+      - db_network
+    ports:
+      - ':5432'
+    healthcheck:  
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+  
+  nats:
+    image: nats:2.10-alpine
+    container_name: nats
+    command: >
+      -js
+      -m 8222
+    networks:
+      - internal
+    restart: unless-stopped
+
+  backend:
+    image: nikolay2310/backend
+    container_name: backend
+    volumes:
+      - ...
+    networks:
+      - db_network
+      - internal
+    env_file:
+      - .env
+    command: ["docker/app.sh"]
+    ports:
+      - ':8000'
+    depends_on:
+      nats
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: nikolay2310/pur_hash_relation:latest
+
+  bot:
+    image: nikolay2310/bot
+    container_name: bot
+    volumes:
+      - ...
+    networks:
+      - internal
+    env_file:
+      - .env
+    command: ["docker/bot.sh"]
+    ports:
+      - ':8080'
+    depends_on:
+      backend
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static:/app/frontend/static/
+      - media:/app/frontend/static/media
+      - ./certs:/certs/
+    depends_on:
+      - app
+    restart: always
+    networks:
+      - backend_network

@@ -73,3 +73,5 @@ DB_PASS=postgres
 ACCESS_SECRET_KEY=5d7d+h5R0NLjcCmNlN5l6v40hIyH5/h/yJ7KrDJc7xo=
 REFRESH_SECRET_KEY=BYovezMkkn7d51i6gWZSQWucMkw5VYaYNT1UhJr8P4o=
 ALGORITHM=HS256
+
+python3 src/admin/create_super_user.py

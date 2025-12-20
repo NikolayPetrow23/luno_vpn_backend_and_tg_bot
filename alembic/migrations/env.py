@@ -13,8 +13,9 @@ from src.config import settings
 from src.database import Base
 from src.models import (
     User, Subscription, PlanSubscription, PromoCode, 
-    Referral, Payment, PaymentProvider, PaymentType,
-    Server, VPNConfiguration
+    Referral, Payment, PaymentType, Server, Traffic, 
+    Device, ShortLink, HeadersConfigVPN, DeviceIdentifierType, 
+    PlanServer, Configuration
 )  # noqa: F401
 
 # this is the Alembic Config object, which provides

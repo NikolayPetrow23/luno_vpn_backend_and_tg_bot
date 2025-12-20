@@ -1,23 +1,26 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, String, LargeBinary, ForeignKey, DateTime, Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, Enum as SQLAlchemyEnum, BigInteger, Boolean
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from src.models.enum import UserRole
 from src.database import Base
+from src.utils.utils import generate_short_code, utc_now_no_microseconds
 
 
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = Column(Integer, primary_key=True)
-    telegram_id: Mapped[str] = Column(String, unique=True, nullable=False)
+    telegram_id: Mapped[int] = Column(BigInteger, unique=True, nullable=False)
     username: Mapped[str] = Column(String, unique=True, nullable=True)
+    ref_code: Mapped[str] = Column(String, unique=True, nullable=True, default=generate_short_code)
     hashed_password: Mapped[bytes] = Column(LargeBinary, nullable=True)
     first_name: Mapped[str] = Column(String, nullable=False)
     role = Column(SQLAlchemyEnum(UserRole), nullable=False, default=UserRole.CLIENT) 
-    is_active: Mapped[bool] = Column(Integer, nullable=False, default=True)
-    create_at: Mapped[datetime] = Column(DateTime, nullable=False, default=datetime.now)
+    is_testing_subscribe: Mapped[bool] = Column(Boolean, nullable=False, default=False)
+    is_active: Mapped[bool] = Column(Boolean, nullable=False, default=True)
+    create_at: Mapped[datetime] = Column(DateTime, nullable=False, default=utc_now_no_microseconds)
 
     # Приглашенные этим пользователем (много)
     referrals_sent: Mapped[list["Referral"]] = relationship(
@@ -46,10 +49,7 @@ class User(Base):
         back_populates="user",
         foreign_keys="[Payment.user_id]",
         lazy="select"
-    )
-    vpn_configuration: Mapped[list["VPNConfiguration"]] = relationship(
-        "VPNConfiguration", 
-        back_populates="user",
-        foreign_keys="[VPNConfiguration.user_id]",
-        lazy="select"
-    )
+    )   
+
+    def __str__(self):
+        return f"Пользователь #{self.id} - telegram_id: {self.telegram_id}"

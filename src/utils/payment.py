@@ -1,31 +1,33 @@
-import uuid
-
-from yookassa import Configuration, Payment
+import httpx
 
 from src.config import settings
 
-Configuration.account_id = settings.config.TEST_PAYMENT_SHOP_ID
-Configuration.secret_key = settings.config.TEST_PAYMENT_SHOP_TOKEN
 
-async def create_yookassa_payment(amount: int, description: str, user_id: int, plan_id: int):
-    payment = Payment.create({
-        "amount": {
-            "value": f"{amount:.2f}",
+async def create_payment_platega(
+        payment_method: int, 
+        amount: int,
+        description: str, 
+        user_id: int,
+        plan_id: int
+    ):
+    # 2 - СБП, 10 - Банковская карта
+    payload = {
+        "paymentMethod": payment_method,
+        "paymentDetails": {
+            "amount": f"{amount:.2f}",
             "currency": "RUB"
         },
-        "confirmation": {
-            "type": "redirect",
-            "return_url": settings.config.YOOKASSA_RETURN_URL
-        },
-        "capture": True,
         "description": description,
-        "metadata": {
-            "user_id": user_id,
-            "plan_id": plan_id
-        }
-    }, uuid.uuid4())
-
-    return {
-        "id": payment.id,
-        "confirmation_url": payment.confirmation.confirmation_url
+        "return": "https://lunovpn.tech/payment-success",
+        "failedUrl": "https://google.com/fail",
+        "payload": f"user_id:{user_id}&plan_id:{plan_id}"
     }
+    async with httpx.AsyncClient(timeout=60.0) as client:
+            headers = {
+                'Content-Type': 'application/json',
+                'X-Secret': settings.config.API_KEY,
+                'X-MerchantId': settings.config.MERCHANT_ID
+            }
+            resp = await client.post(f"https://{settings.config.PLATEGA_URL}/transaction/process", json=payload, headers=headers)
+            resp.raise_for_status()
+            return resp.json()

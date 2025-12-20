@@ -31,10 +31,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         if now > expiry:
             raise TokenExpiredException
         
-    except JWTError:
+    except JWTError as e:
+        print(e)
         raise HTTPException(status_code=401, detail="Неверный токен!")
 
-    user = await UserDAO.find_one_or_none(telegram_id=user_telegram_id)
+    user = await UserDAO.find_one_or_none(telegram_id=int(user_telegram_id))
 
     if not user:
         raise HTTPException(status_code=404, detail="Пользователя не существует!")

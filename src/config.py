@@ -1,3 +1,4 @@
+import base64
 import os
 
 from dotenv import load_dotenv
@@ -18,11 +19,19 @@ class DataBase:
 
 
 class Config:
+    BOT_TOKEN = os.getenv("BOT_TOKEN")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     ALGORITHM = os.getenv("ALGORITHM")
-    TEST_PAYMENT_SHOP_ID = os.getenv("TEST_PAYMENT_SHOP_ID")
-    TEST_PAYMENT_SHOP_TOKEN = os.getenv("TEST_PAYMENT_SHOP_TOKEN")
-    YOOKASSA_RETURN_URL = os.getenv("YOOKASSA_RETURN_URL")
+    PLATEGA_URL = os.getenv("PLATEGA_URL")
+    MERCHANT_ID = os.getenv("MERCHANT_ID")
+    API_KEY = os.getenv("API_KEY")
+    URL_DOMAIN = os.getenv("URL_DOMAIN")
+    URL_DOMAIN_SUB = os.getenv("URL_DOMAIN_SUB")
+    API_TOKEN_SERVER = os.getenv("API_TOKEN_SERVER")
+    PORT_API_SERVER = os.getenv("PORT_API_SERVER")
+    SBP = 2
+    CARD = 10
+    CRYPTO = 13
 
 
 class AuthJWT:
